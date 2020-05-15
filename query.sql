@@ -50,14 +50,16 @@ WHERE
 	st_intersects(s.geom, t.geom);
 
 --calculate availability of sidewalk space per population for each census block group
-CREATE TABLE sf_social_distancing AS WITH population AS (
+CREATE TABLE sf_social_distancing AS 
+WITH population AS (
 	SELECT
 		geoid10,
 		(total_population * 1.095) AS population_2019,
 		geom
 	FROM
 		sf_pop_bg_2010 p
-) SELECT DISTINCT
+) 
+SELECT DISTINCT
 	s.geoid10,
 	s.intersect_geom AS sidewalk_geom,
 	p.geom AS cbg_geom,
@@ -72,7 +74,8 @@ FROM
 --run the query 10x to simulate different person out ratio (10%, 20%.., 100%)
 --this step is only useful if you want to simulate population density
 --otherwise, you can choose to calculate distance per person on the map UI.
-CREATE TABLE sf_social_distancing_viz_3 AS WITH RECURSIVE recursive_distancing (
+CREATE TABLE sf_social_distancing_viz_3 AS 
+WITH RECURSIVE recursive_distancing (
 	geoid10,
 	sidewalk_geom,
 	cbg_geom,
@@ -98,7 +101,7 @@ CREATE TABLE sf_social_distancing_viz_3 AS WITH RECURSIVE recursive_distancing (
 		s.geoid10,
 		s.sidewalk_geom,
 		s.cbg_geom,
-		st_generatepoints (s.sidewalk_geom, (s.population_2019 * 0.1)) AS point_geom,
+		st_generatepoints (s.sidewalk_geom, (s.population_2019 * (r.person_out_ratio - 0.1))) AS point_geom,
 		s.sidewalk_area,
 		s.population_2019,
 		r.person_out_ratio - 0.1 AS person_out_ratio,
@@ -115,13 +118,15 @@ FROM recursive_distancing;
 
 
 --to export file to create map visualization using the original line instead of buffered.
-CREATE TABLE sf_social_distancing_viz_line2 AS SELECT DISTINCT
-	a.geoid10 AS "Block Group ID",
-	b.intersect_geom AS "geom",
-	a.person_out_ratio * 100 AS "Person Out Ratio",
-	sidewalk_area AS "Total Sidewalk Area",
-	population_2019 AS "Population 2019",
-	round(a.distance_per_person) AS "Per Person Distance (Sq. Ft)"
+CREATE TABLE sf_social_distancing_viz_line3 AS 
+SELECT DISTINCT
+	a.geoid10,
+	b.intersect_geom AS geom,
+	a.person_out_ratio * 100 AS person_out_pct,
+	sidewalk_area,
+	population_2019,
+	round(a.distance_per_person) AS distance_sqft,
+	round(sqrt(a.distance_per_person)) AS distance_ft
 FROM
 	sf_social_distancing_viz_3 a
 	JOIN sf_sidewalk_line_intersect b ON (a.geoid10 = b.geoid10)
@@ -130,14 +135,14 @@ WHERE
 
 
 --to export file to create map visualization to simulate population density
-CREATE TABLE sf_social_distancing_viz_point3 AS SELECT DISTINCT
-	geoid10 AS "Block Group ID",
-	point_geom AS "geom",
-	person_out_ratio * 100 AS "Person Out Ratio",
-	sidewalk_area AS "Total Sidewalk Area",
-	population_2019 AS "Population 2019",
-	round(distance_per_person) AS "Per Person Distance (Sq. Ft)"
+CREATE TABLE sf_social_distancing_viz_point3 AS 
+SELECT DISTINCT
+	geoid10,
+	point_geom AS geom,
+	person_out_ratio * 100 AS person_out_pct,
+	sidewalk_area,
+	population_2019,
+	round(distance_per_person) AS distance_sqft,
+	round(sqrt(distance_per_person)) AS distance_ft
 FROM
-	sf_social_distancing_viz_3
-WHERE
-	geoid10 != '060750601001';
+	sf_social_distancing_viz_3;
