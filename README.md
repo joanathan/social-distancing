@@ -12,7 +12,7 @@ Import SF sidewalk shapefile to the database.
 
 #### 2. Buffer sidewalk line zones
 
-Use `st_buffer` to convert line zones to polygons. Buffer size is from sidewalk width column as guidance for buffer size.
+Use `st_buffer` to convert line zones to polygons. Column `sidewalk_f`, sidewalk width size, is the buffer size.
 ![](images/1_buffer.png)
 
 
