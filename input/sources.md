@@ -8,3 +8,5 @@ http://opendata.mtc.ca.gov/datasets/-san-francisco-bay-region-2010-census-block-
 
 **SF 2010 Population (By Block Groups)**
 http://www.bayareacensus.ca.gov/small/small.htm#blockgroup
+
+The shapefile link in the SF 2010 Population website is broken. You will have to join Census Block Groups shapefile with the population information. Otherwise, you can also use census tracts or blocks, instead of block groups.
