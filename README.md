@@ -30,7 +30,7 @@ Import Census Block Groups shapefile and population information to the database.
 
 #### 5. Split sidewalk polygon
 
-Use `st_intersection` to split sidewalk unioned-polygon by census block groups, so each census block group has its network of sidewalk. 
+Use `st_intersection` to split sidewalk polygon, so each census block group has its network of sidewalk. 
 ![](images/4_split.png)
 
 
