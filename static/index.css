@@ -1,0 +1,75 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, Sans-serif;
+}
+
+h1 {
+  font-size: 20px;
+  line-height: 30px;
+}
+
+h2 {
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 10px;
+}
+
+a {
+  font-size: 10px;    
+  text-decoration: none;
+  color: #0057FF;
+}
+
+#map {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+#console {
+  position: absolute;
+  width: 280px;
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: white;
+}
+
+#console .section {
+  margin-bottom: 20px;
+}
+
+.row {
+  height: 12px;
+  width: 100%;
+}
+
+.colors {
+  background: linear-gradient(to right, #FE0404, #FFBD06, #fff306, #00FFC2, #0057FF);
+  margin-bottom: 5px;
+}
+
+.label {
+  width: 18%;
+  display: inline-block;
+  text-align: center;
+  font-size: 12px;
+}
+
+.mapboxgl-popup {
+  max-width: 400px;
+  font: 12px/18px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.mapboxgl-popup .title {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.mapboxgl-popup .bold {
+  font-weight: bold;
+}
+
+.mapboxgl-popup .section {
+  margin-top: 7px;
+}

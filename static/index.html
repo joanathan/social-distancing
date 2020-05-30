@@ -1,158 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8" />
-<title>Social Distancing Density</title>
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-<script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
-<link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
-<style>
-    body { margin: 0; padding: 0; }
-    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-</style>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Social Distancing Density</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="index.css"> 
+  </head>
+  <body>
+    <div id='map'></div>
+    <div id='console'>
+      <h1>Social Distancing Density</h1>
+      <p>A tool to measure available sidewalk area by population density to maintain a safe distance (6 feet). <a href='https://github.com/joanathan/social_distancing_density'><b>(GitHub)</b></a></p>
 
-<style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Helvetica Neue', Helvetica, Arial, Sans-serif;
-    }
-
-    #map {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-    }
-
-    h1 {
-      font-size: 20px;
-      line-height: 30px;
-    }
-
-    h2 {
-      font-size: 14px;
-      line-height: 20px;
-      margin-bottom: 10px;
-    }
-
-    a {
-      text-decoration: none;
-      color: #0057FF;
-    }
-
-    #console {
-      position: absolute;
-      width: 280px;
-      margin: 10px;
-      padding: 10px 20px;
-      background-color: white;
-    }
-
-    .session {
-      margin-bottom: 20px;
-    }
-
-    .row {
-      height: 12px;
-      width: 100%;
-    }
-
-    .colors {
-      background: linear-gradient(to right, #FE0404, #FFBD06, #fff306, #00FFC2, #0057FF);
-      margin-bottom: 5px;
-    }
-
-    .label {
-      width: 18%;
-      display: inline-block;
-      text-align: center;
-      font-size: 12px;
-    }
-
-    .mapboxgl-popup {
-      max-width: 400px;
-      font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-    }
-</style>
-
-<nav id="menu"></nav>
-<div id='map'></div>
-<div id='console'>
-  <h1>Social Distancing Density</h1>
-  <p>A tool to measure available sidewalk area by population density to maintain a safe distance (6 feet). <a href='https://github.com/joanathan/social_distancing_density'><b>(GitHub)</b></a></p>
-
-  <div class='session'>
-      <h2>Per Person Distance (Ft)</h2>
-      <div class='row colors'>
+      <div class='section'>
+        <h2>Per Person Distance (Ft)</h2>
+        <div class='row colors'>
+        </div>
+        <div class='row labels'>
+          <div class='label'>0</div>
+          <div class='label'>6</div>
+          <div class='label'>12</div>
+          <div class='label'>18</div>
+          <div class='label'>24+</div>
+        </div>
       </div>
-      <div class='row labels'>
-        <div class='label'>0</div>
-        <div class='label'>6</div>
-        <div class='label'>12</div>
-        <div class='label'>18</div>
-        <div class='label'>24+</div>
+
+      <div class='section' id='sliderbar'>
+        <h2>
+          Population Occupying the Street: 
+          <label id='out-ratio'>10% </label>
+        </h2>
+        <input id='slider' class='row' type='range' min='0.1' max='0.9' step='0.1' value='0.1' />
       </div>
-  </div>
 
-  <div class='session' id='sliderbar'>
-      <h2>
-        Population Occupying the Street: 
-        <label id='out-ratio'>10% </label></h2>
-      <input id='slider' class='row' type='range' min='10' max='90' step='10' value='10' />
-  </div>
-</div>
-
-<script>
-    mapboxgl.accessToken = MAPBOX TOKEN;
-
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/dark-v10',
-        zoom: 11.9,
-        center: [-122.465940, 37.761645]
-    });
-
-    map.on('load', function() {
-        map.addSource('street', {
-            'type': 'geojson',
-            'data': './sf_social_distancing_viz_line3.geojson'
-        });
-
-        map.addLayer({
-            'id': 'street',
-            'type': 'line',
-            'source': 'street',
-            'layout': {
-                'line-join': 'round',
-                'line-cap': 'round'
-            },
-            'paint': {
-                'line-color': [
-                    'interpolate',
-                    ['linear'],
-                    ['number', ['get', 'distance_ft']],
-                    0, '#FE0404', 
-                    6, '#FFBD06', 
-                    12, '#fff306', 
-                    18, '#00FFC2', 
-                    24, '#0057FF' 
-                ],
-                'line-width': 1
-            }
-        });
-
-        map.setFilter('street', ['==', ['to-number', ['get', 'person_out_pct']], 10]);
-
-        document.getElementById('slider').addEventListener('input', function(e) {
-          var ratio = parseInt(e.target.value);
-          map.setFilter('street', ['==', ['to-number', ['get', 'person_out_pct']], ratio]);
-          document.getElementById('out-ratio').innerText = ratio + '%';
-        });
-    });
-</script>
-
-</body>
+      <div class='section' id='toggles'></div>
+    </div>
+    <script src='./maps.js'></script>
+    <script src='./index.js'></script>
+  </body>
 </html>
