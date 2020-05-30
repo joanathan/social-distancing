@@ -24,7 +24,7 @@ async function setupMap() {
   // blockgroup source + layer
   map.addSource('blockgroup', {
     'type': 'geojson',
-    'data': './geojson/sf_social_distancing_viz_3_poly_only.geojson',
+    'data': './geojson/sf_social_distancing.geojson',
     'generateId': true // need id to use feature state
   })
   map.addLayer({
@@ -85,7 +85,7 @@ async function setupMap() {
   // hospital source + layer
   map.addSource('hospital',  {
     'type': 'geojson',
-    'data': './geojson/sf_hospital2.geojson'
+    'data': './geojson/sf_hospital.geojson'
   })
   map.addLayer({
     'id': 'hospital',
@@ -101,7 +101,7 @@ async function setupMap() {
   // hospital source + layer
   map.addSource('foodservices',  {
     'type': 'geojson',
-    'data': './geojson/sf_restaurant3.geojson'
+    'data': './geojson/sf_restaurant.geojson'
   })
   map.addLayer({
     'id': 'foodservices',
