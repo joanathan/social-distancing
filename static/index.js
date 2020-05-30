@@ -1,10 +1,11 @@
 var fieldsToShow = {
-  'street': [
+  'blockgroup': [
     ["Block Group ${this.geoid10}"],
-    ["Per Person Distance ${this.rank_distance}", "${this.distance_ft}"],
+    ["Population 2019", "${this.population_2019} people"],
+    ["Per Person Distance ${this.rank_distance}", "${this.distance_ft} feet"],
     ["Hospital ${this.rank_hospitaldistance}", "${this.hospital_name} (${this.hospital_distance_miles} miles)"],
     ["Food Services ${this.rank_foodservices}", "${this.count_foodservices} restaurants in the area"],
-    ["Transit ${this.rank_munistops}", "${this.count_munistops} Muni stops and ${this.count_muniline} munilines in the area"]]
+    ["Transit ${this.rank_munistops}", "${this.count_munistops} Muni stops nearby"]]
 }
 
 var toggleLayers = {
@@ -69,9 +70,9 @@ function onMapReady() {
 
 function updateDistance() {
   pop_ratio = parseFloat(document.getElementById('slider').value)
-  calculateState('street', 'distance_ft', (props) => {
+  calculateState('blockgroup', 'distance_ft', (props) => {
     return Math.round(Math.sqrt(props['sidewalk_area'] / (props['population_2019'] * pop_ratio)))
   })
 }
 
-init()         
+init()

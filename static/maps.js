@@ -21,16 +21,16 @@ function initMap() {
 }
 
 async function setupMap() {
-  // street source + layer
-  map.addSource('street', {
+  // blockgroup source + layer
+  map.addSource('blockgroup', {
     'type': 'geojson',
     'data': './geojson/sf_social_distancing_viz_3_poly_only.geojson',
     'generateId': true // need id to use feature state
   })
   map.addLayer({
-    'id': 'street',
+    'id': 'blockgroup',
     'type': 'fill',
-    'source': 'street',
+    'source': 'blockgroup',
     'paint': {
       'fill-color': [
         'interpolate',
@@ -128,7 +128,7 @@ async function setupMap() {
 
 function onHover(location) {
   let identifiedFeatures = map.queryRenderedFeatures(location.point, {
-    layers: ['street']
+    layers: ['blockgroup']
   });
 
   if (identifiedFeatures.length !== 0) {
@@ -173,9 +173,9 @@ function showPopup(feature, location) {
       popupsText += `<div class='section'>
                       <div class='bold'>${key}</div>
                       <div>${value}</div>
-                    </div>`  
+                    </div>`
     }
-    
+
   };
   popup.setLngLat(location.lngLat)
   .setHTML(popupsText)
