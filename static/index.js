@@ -82,23 +82,6 @@ function toggleWindow(id) {
   }
 }
 
-function setupEventListeners() {
-  // event listeners
-  // checkbox
-  for (let key in toggleLayers) {
-    for (let i = 0; i < toggleLayers[key].layers.length; i++) {
-      document.getElementById(key).addEventListener('change', () => {setVisibility(toggleLayers[key].layers[i], key)})
-    }
-  }
-
-  // sliders
-  document.getElementById('slider').addEventListener('input', function(e) {
-    updateDistance()
-    document.getElementById('out-ratio').innerText = (pop_ratio * 100) + '%';
-  });
-
-}
-
 function onMapLoad() {
   // any map specific but not layer / data specific things to do
 }
