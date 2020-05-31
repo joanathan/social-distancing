@@ -12,10 +12,10 @@
     <div id='map'></div>
     <div id='console'>
       <h1>Social Distancing Density</h1>
-      <p>A tool to measure available sidewalk area by population density to maintain a safe distance (6 feet). <a href='https://github.com/joanathan/social_distancing_density'><b>(GitHub)</b></a></p>
+      <p>A tool to measure available sidewalk area by population density to maintain a safe distance (6 feet).</p>
 
       <div class='section'>
-        <h2>Per Person Distance (Ft)</h2>
+        <h2>Sidewalk Area Per Person (Ft)</h2>
         <div class='row colors'>
         </div>
         <div class='row labels'>
@@ -32,11 +32,65 @@
           Population Walking on the Street:
           <label id='out-ratio'>10% </label>
         </h2>
-        <input id='slider' class='row' type='range' min='0.1' max='0.9' step='0.1' value='0.1' />
+        <input id='slider' class='slider' type='range' min='0.1' max='0.9' step='0.1' value='0.1' />
       </div>
 
       <h2>Map Layers</h2>
       <div class='section' id='toggles'></div>
+    </div>
+
+    <div id="menu">
+      <button class="btn" title="Disclaimer" onclick="toggleWindow('disclaimer')">
+        <img src="/icons/github.svg"></img>
+      </button>
+      <button class="btn" title="Description" onclick="toggleWindow('description')">
+        <img src="/icons/github.svg"></img>
+      </button>
+      <a href="https://github.com/joanathan/social-distancing" target="_blank">
+        <button class="btn"><img src="/icons/github.svg"></img>
+        </button>
+      </a>
+    </div>
+
+    <div id="disclaimer" class="window menu" style="display: none;">
+      <img class="close" src="/icons/close.svg" alt="close" onclick="toggleWindow('disclaimer')">
+      <h1>Disclaimer</h1>
+      <div class='section'>
+        <h3>THIS IS A PERSONAL PROJECT, AND NOT TO BE USED AS A GUIDANCE FOR POLICY MAKING.</h3>
+      </div>
+    </div>
+
+    <div id="description" class="window menu" style="display: none;">
+      <img class="close" src="/icons/close.svg" alt="close" onclick="toggleWindow('description')">
+      <h1>Rankings</h1>
+      <div class='section'>
+        <h2>Sidewalk Area Per Person</h2>
+          <h3>Available sidewalk area for a person to walk in her home block group
+          <div>⭐ < 12 feet</div>
+          <div>⭐⭐ 12-24 feet</div>
+          <div>⭐⭐⭐ > 24 feet</div></h3>
+      </div>
+      <div class='section'>
+        <h2>Hospital</h2>    
+          <h3>Distance to the closest hospital
+          <div>⭐ > 0.5 miles</div> 
+          <div>⭐⭐ 0.25-0.5 miles</div>
+          <div>⭐⭐⭐ < 0.25 miles</div></h3>
+      </div>
+      <div class='section'>
+        <h2>Food Services</h2>  
+          <h3>Number of restaurants in the area
+          <div>⭐ < 5 restaurants</div>
+          <div>⭐⭐ 5-15 restaurants</div>
+          <div>⭐⭐⭐ > 15 restaurants</div></h3>
+      </div>
+      <div class='section'>
+        <h2>Transit Access</h2>   
+          <h3>Number of Muni stops nearby   
+          <div>⭐ < 4 stops</div>
+          <div>⭐⭐ 4-8 stops</div>
+          <div>⭐⭐⭐ > 8 stops</div></h3>  
+      </div>
     </div>
 
     <script src='./maps.js'></script>

@@ -1,3 +1,5 @@
+CREATE EXTENSION postgis;
+
 --to import shp to psql
 --shp2pgsql -I -s 4326 [SHAPEFILENAME].shp public.[TABLENAME] | psql -U [USERNAME] -h [HOSTNAME] -d [DATABASENAME]
 CREATE TABLE sf_pop_bg_2010 (
@@ -17,24 +19,6 @@ CREATE TABLE sf_pop_bg_2010 (
     "join" int4,
     "geoid" int4,
     "total_population" int4
-);
-
-CREATE TABLE sf_muni_gtfs_shapes_line (
-    "shape_id" int8,
-    "line_geom" geometry
-);
-
-CREATE TABLE sf_muni_gtfs_stops (
-    "geom" geometry,
-    "stop_id" int4,
-    "stop_code" int4,
-    "stop_name" varchar,
-    "stop_desc" varchar,
-    "stop_lat" float8,
-    "stop_lon" float8,
-    "zone_id" varchar,
-    "stop_url" varchar,
-    PRIMARY KEY ("id")
 );
 
 CREATE TABLE sf_hospital (
@@ -57,7 +41,6 @@ CREATE TABLE sf_hospital (
     "zip" int8,
     "country" varchar(254),
     "source" varchar(254),
-    PRIMARY KEY ("id")
 );
 
 CREATE TABLE sf_restaurant (
@@ -112,4 +95,26 @@ CREATE TABLE sf_restaurant (
     "zip" int4,
     "country" varchar,
     "source" varchar
+);
+
+CREATE TABLE sf_muni_gtfs_stops (
+    "geom" geometry,
+    "stop_id" int4,
+    "stop_code" int4,
+    "stop_name" varchar,
+    "stop_desc" varchar,
+    "stop_lat" float8,
+    "stop_lon" float8,
+    "zone_id" varchar,
+    "stop_url" varchar,
+);
+
+--optional: if you want to visualize the Muni line
+CREATE TABLE "public"."sf_muni_gtfs_shapes" (
+    "geom" geometry,
+    "shape_id" int8,
+    "shape_pt_l" numeric,
+    "shape_pt_1" numeric,
+    "shape_pt_s" int8,
+    "shape_dist" int8,
 );

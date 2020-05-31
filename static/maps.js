@@ -149,11 +149,14 @@ function showPopup(feature, location) {
 
   // calculate distance to show
   properties['distance_ft'] = state['distance_ft'] // copy feature state
-  properties['rank_distance'] = rank(state['distance_ft'], [5, 18, 30])
+  properties['rank_distance'] = rank(state['distance_ft'], [0, 12, 24])
+  properties['rank_munistops'] = rank(state['count_munistops'], [0, 4, 8])
+  properties['rank_hospitaldistance'] = rank(state['hospital_distance_miles'], [0.5, 0.25, 0])
+  properties['rank_foodservices'] = rank(state['count_foodservices'], [0, 5, 15])
 
   for (let key in properties) {
     if (properties[key] == "null") {
-      properties[key] = 0;
+      properties[key] = 0;  
     } else if (!isNaN(properties[key]) && properties[key].toString().includes('.')) {
       properties[key] = Math.round(properties[key] * 100)/100 // round to nearest hundredth
     } else if (key.includes('rank')) {

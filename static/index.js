@@ -2,7 +2,7 @@ var fieldsToShow = {
   'blockgroup': [
     ["Block Group ${this.geoid10}"],
     ["Population 2019", "${this.population_2019} people"],
-    ["Per Person Distance ${this.rank_distance}", "${this.distance_ft} feet"],
+    ["Sidewalk Area Per Person ${this.rank_distance}", "${this.distance_ft} feet"],
     ["Hospital ${this.rank_hospitaldistance}", "${this.hospital_name} (${this.hospital_distance_miles} miles)"],
     ["Food Services ${this.rank_foodservices}", "${this.count_foodservices} restaurants in the area"],
     ["Transit ${this.rank_munistops}", "${this.count_munistops} Muni stops nearby"]]
@@ -59,6 +59,44 @@ function init() {
   document.getElementById('toggles').innerHTML = toggles
 
   initMap()
+}
+
+function enterMap() {
+  var x = document.getElementById('description')
+  x.style.display = "none";
+  x.classList.add("menu")
+}
+
+function toggleWindow(id) {
+  var x = document.getElementById(id);
+  if (x.style.display === "block") {
+    x.style.display = "none";
+  } else {
+    x.style.display = "block";
+    var windows = document.querySelectorAll('.window');
+    Array.prototype.forEach.call(windows, function(element, index) {
+      if (element.id != id) {
+        element.style.display = 'none';
+      }
+    });
+  }
+}
+
+function setupEventListeners() {
+  // event listeners
+  // checkbox
+  for (let key in toggleLayers) {
+    for (let i = 0; i < toggleLayers[key].layers.length; i++) {
+      document.getElementById(key).addEventListener('change', () => {setVisibility(toggleLayers[key].layers[i], key)})
+    }
+  }
+
+  // sliders
+  document.getElementById('slider').addEventListener('input', function(e) {
+    updateDistance()
+    document.getElementById('out-ratio').innerText = (pop_ratio * 100) + '%';
+  });
+
 }
 
 function onMapLoad() {

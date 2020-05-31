@@ -71,105 +71,88 @@ FROM
 	sf_sidewalk_intersect s
 	JOIN population p ON (s.geoid10 = p.geoid10);
 
-
-	-- drop table sf_social_distancing;
-	CREATE TABLE sf_social_distancing AS
-	WITH hospital_closest AS (
-		SELECT
-			st_distance(st_transform(d.geom, 3857),
-			st_transform(h.geom, 3857)) * 0.000189394 AS hospital_distance_miles,
-			h. "hospital n" AS hospital_name,
-			d.geoid10
-		FROM
-			sf_social_distancing_prep d,
-			sf_hospital h
-	),
-	hospital_order AS (
-		SELECT DISTINCT
-			row_number() OVER (PARTITION BY h.geoid10 ORDER BY h.hospital_distance_miles) AS r,
-			h.*
-		FROM
-			hospital_closest h
-	),
-	hospitals AS (
-		SELECT
-			h.*
-		FROM
-			hospital_order h
-		WHERE
-			h.r = 1
-	),
-	restaurants AS (
-		SELECT
-			b.geoid10,
-			count(DISTINCT r.*) AS count_foodservices
-		FROM
-			sf_restaurant r,
-			sf_pop_bg_2010 b
-		WHERE
-			st_intersects(r.geom, b.geom)
-		GROUP BY 1
-	),
-	munilines AS (
-		SELECT
-			s.geoid10,
-			count(DISTINCT m.*) AS count_muniline
-		FROM
-			sf_social_distancing_prep s,
-			sf_muni_gtfs_shapes_line m
-		WHERE
-			st_intersects(m.line_geom, s.geom)
-		GROUP BY 1
-	),
-	munistops AS (
-		SELECT
-			s.geoid10,
-			count(DISTINCT m.*) AS count_munistops
-		FROM
-			sf_social_distancing_prep s,
-			sf_muni_gtfs_stops m
-		WHERE
-			st_intersects(ST_Buffer(m.geom::geography, 15, 'endcap=round join=round')::geometry, s.geom) -- 50 meter
-		GROUP BY 1
-	)
-	SELECT DISTINCT
-		d.geoid10,
-		r.count_foodservices,
-		CASE WHEN r.count_foodservices IS NULL THEN '0'
-			WHEN r.count_foodservices BETWEEN 1 AND 5 THEN '1'
-			WHEN r.count_foodservices BETWEEN 5 AND 15 THEN '2'
-			ELSE '3'
-		END AS rank_foodservices,
-		m.count_muniline,
-		s.count_munistops,
-		CASE WHEN s.count_munistops IS NULL THEN '0'
-			WHEN s.count_munistops BETWEEN 1 AND 4 THEN '1'
-			WHEN s.count_munistops BETWEEN 4 AND 8 THEN '2'
-			ELSE '3'
-		END AS rank_munistops,
-		h.hospital_name,
-		round(h.hospital_distance_miles::numeric, 2) AS hospital_distance_miles,
-		CASE WHEN h.hospital_distance_miles > 10 THEN '0'
-			WHEN h.hospital_distance_miles BETWEEN 5 AND 10 THEN '1'
-			WHEN h.hospital_distance_miles BETWEEN 2 AND 5 THEN '2'
-			ELSE '3'
-		END AS rank_hospitaldistance,
-		CASE
-			WHEN d.distance_ft < 6 THEN '0'
-			WHEN d.distance_ft BETWEEN 6 AND 18 THEN '1'
-			WHEN d.distance_ft BETWEEN 18 AND 36 THEN '2'
-			ELSE '3'
-		END AS rank_distance,
-		d.sidewalk_area,
-		d.population_2019,
-		d.geom
+-- drop table sf_social_distancing;
+CREATE TABLE sf_social_distancing AS
+WITH hospital_closest AS (
+	SELECT
+		st_distance(st_transform(d.geom, 3857),
+		st_transform(h.geom, 3857)) * 0.000189394 AS hospital_distance_miles,
+		h. "hospital n" AS hospital_name,
+		d.geoid10
 	FROM
-		sf_social_distancing_prep d
-		LEFT JOIN hospitals h ON (h.geoid10 = d.geoid10)
-		LEFT JOIN munilines m ON (h.geoid10 = m.geoid10)
-		LEFT JOIN munistops s ON (h.geoid10 = s.geoid10)
-		LEFT JOIN restaurants r ON (h.geoid10 = r.geoid10);
+		sf_social_distancing_prep d,
+		sf_hospital h
+),
+hospital_order AS (
+	SELECT DISTINCT
+		row_number() OVER (PARTITION BY h.geoid10 ORDER BY h.hospital_distance_miles) AS r,
+		h.*
+	FROM
+		hospital_closest h
+),
+hospitals AS (
+	SELECT
+		h.*
+	FROM
+		hospital_order h
+	WHERE
+		h.r = 1
+),
+restaurants AS (
+	SELECT
+		b.geoid10,
+		count(DISTINCT r.*) AS count_foodservices
+	FROM
+		sf_restaurant r,
+		sf_pop_bg_2010 b
+	WHERE
+		st_intersects(r.geom, b.geom)
+	GROUP BY 1
+),
+munistops AS (
+	SELECT
+		s.geoid10,
+		count(DISTINCT m.*) AS count_munistops
+	FROM
+		sf_social_distancing_prep s,
+		sf_muni_gtfs_stops m
+	WHERE
+		st_intersects(ST_Buffer(m.geom::geography, 15, 'endcap=round join=round')::geometry, s.geom) -- 50 meter
+	GROUP BY 1
+)
+SELECT DISTINCT
+	d.geoid10,
+	r.count_foodservices,
+	s.count_munistops,
+	h.hospital_name,
+	round(h.hospital_distance_miles::numeric, 2) AS hospital_distance_miles,
+	d.sidewalk_area,
+	d.population_2019,
+	d.geom
+FROM
+	sf_social_distancing_prep d
+	LEFT JOIN hospitals h ON (h.geoid10 = d.geoid10)
+	LEFT JOIN munistops s ON (h.geoid10 = s.geoid10)
+	LEFT JOIN restaurants r ON (h.geoid10 = r.geoid10);
 
+--optional: create a Muni route for visualization
+CREATE TABLE sf_muni_gtfs_shapes_line AS 
+WITH line AS (
+	SELECT
+		shape_id,
+		shape_pt_s,
+		max(shape_pt_s) OVER (PARTITION BY shape_id) AS max,
+		st_makeline (array_agg(geom) OVER (PARTITION BY shape_id ORDER BY shape_pt_s)) AS line_geom
+	FROM
+		sf_muni_gtfs_shapes
+)
+SELECT
+	shape_id,
+	line_geom
+FROM
+	line
+WHERE
+	shape_pt_s = max;
 
 --optional:
 --run the query 10x to simulate different person out ratio (10%, 20%.., 100%)

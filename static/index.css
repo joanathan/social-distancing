@@ -33,6 +33,7 @@ a {
   margin: 10px;
   padding: 10px 20px;
   background-color: white;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, .8);
 }
 
 #console .section {
@@ -47,6 +48,116 @@ a {
 .colors {
   background: linear-gradient(to right, #FE0404, #FFBD06, #fff306, #00FFC2, #0057FF);
   margin-bottom: 5px;
+}
+
+.slider {
+  margin-top: 17px;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 7px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: url('/icons/walker.svg');
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+#console {
+  position: absolute;
+  width: 280px;
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: white;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, .8);
+}
+
+#menu {
+  position: absolute;
+  /* margin: 10px; */
+  right: 10px;
+  padding: 10px 0px;
+}
+
+.window .section {
+  margin-bottom: 20px;
+} 
+
+.window h1 {
+  margin-top: 0px;
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.window h2 {
+  margin-bottom: 0;
+}
+
+.window h3 {
+  margin-top: 0;
+  font-size: small;
+}
+
+.window .close {
+  position: absolute;
+  right: 40px;
+}
+
+.window.menu {
+  position: absolute;
+  width: 280px;
+  padding: 20px 20px;
+  top: 10px;
+  right: 10px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.window.menu .header {
+  height: 40px;
+}
+
+.show {
+  display:block;
+}
+
+.btn {
+  outline: 0;
+  border: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 23px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, .8);
+}
+
+.btn:hover {
+  opacity: 40%;
+  transition: 0.1s ease-in-out;
+}
+
+.close {
+  width: 20px;
+  height: 20px;
+  transition: 0.1s ease-in-out;
+}
+
+.close:hover {
+  opacity: 40%;
 }
 
 .label {
