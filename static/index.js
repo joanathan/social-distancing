@@ -8,71 +8,88 @@ var fieldsToShow = {
     ["Transit ${this.rank_munistops}", "${this.count_munistops} Muni stops nearby"]]
 }
 
-var toggleLayers = {
+var inputs = {
+  'BlockGroups': {
+    listeners: [{
+      type: 'slider',
+      id: 'slider',
+      action: 'input',
+      callback: updateDistance
+    }],
+    layers: ['blockgroup']
+  },
   'Hospital': {
-    show: false,
-    layers: ['hospital']
+    listeners: [visibilityToggle(false)],
+    layers: ['hospital'],
   },
   'Food Services': {
-    show: false,
-    layers: ['foodservices']
+    listeners: [visibilityToggle(false)],
+    layers: ['foodservices'],
   },
   'Muni': {
-    show: false,
-    layers: ['transitline', 'transitstop']
+    listeners: [visibilityToggle(false)],
+    layers: ['transitline', 'transitstop'],
+  }
+}
+var layerToInput = {} // reverse lookup
+
+function visibilityToggle(show) {
+  return {
+    type: 'toggle',
+    show: show,
+    action: 'change',
+    callback: setLayersVisibility,
   }
 }
 
-var pop_ratio;
-
 function init() {
-  // set up toggle options
   let toggles = ''
-  for (let key in toggleLayers) {
-    toggles += `<div><input type="checkbox" id="${key}" value="${key}" ${toggleLayers[key].show ? 'checked' : ''}> ${key}</div>`
+  for (let key in inputs) {
+    // set up toggle options
+    for (let i = 0; i < inputs[key].listeners.length; i++) {
+      if (inputs[key].listeners[i].type == 'toggle') {
+        toggles += `<div><input type="checkbox" id="${key}" value="${key}" ${inputs[key].listeners[i].show ? 'checked' : ''}> ${key}</div>`
+      }
+    }
+    // set up reverse lookup
+    for (let i = 0; i < inputs[key].layers.length; i++) {
+      layerToInput[inputs[key].layers[i]] = key
+    }
   }
   document.getElementById('toggles').innerHTML = toggles
 
   initMap()
 }
 
-function setupEventListeners() {
-  // event listeners
-  // checkbox
-  for (let key in toggleLayers) {
-    for (let i = 0; i < toggleLayers[key].layers.length; i++) {
-      document.getElementById(key).addEventListener('change', () => {setVisibility(toggleLayers[key].layers[i], key)})
-    }
-  }
-
-  // sliders
-  document.getElementById('slider').addEventListener('input', function(e) {
-    updateDistance()
-    document.getElementById('out-ratio').innerText = (pop_ratio * 100) + '%';
-  });
-
-}
-
 function onMapLoad() {
   // any map specific but not layer / data specific things to do
 }
 
-function onMapReady() {
-  setupEventListeners()
-  for (let key in toggleLayers) {
-    for (let i = 0; i < toggleLayers[key].layers.length; i++) {
-      setVisibility(toggleLayers[key].layers[i], key)
+function onLayerLoad(layer) {
+  let key = layerToInput[layer]
+  if (key) {
+    for (let i = 0; i < inputs[key].listeners.length; i++) {
+      let listener = inputs[key].listeners[i]
+      document.getElementById( listener.id ? listener.id : key).addEventListener(
+        listener.action, () => {listener.callback(key)})
+      listener.callback(key)
     }
   }
+}
 
-  updateDistance()
+// event listener callbacks
+function setLayersVisibility(key) {
+  for (let i = 0; i < inputs[key].layers.length; i++) {
+    setVisibility(inputs[key].layers[i], key)
+  }
 }
 
 function updateDistance() {
-  pop_ratio = parseFloat(document.getElementById('slider').value)
+  let pop_ratio = parseFloat(document.getElementById('slider').value)
   calculateState('blockgroup', 'distance_ft', (props) => {
     return Math.round(Math.sqrt(props['sidewalk_area'] / (props['population_2019'] * pop_ratio)))
   })
+  document.getElementById('out-ratio').innerText = (pop_ratio * 100) + '%';
 }
 
 init()

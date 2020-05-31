@@ -18,6 +18,12 @@ function initMap() {
     await setupMap()
     onMapLoad()
   })
+
+  map.on('sourcedata', function(e) {
+    let layer = e.sourceId
+    if (map.getSource(layer)._loaded)
+      onLayerLoad(layer)
+  });
 }
 
 async function setupMap() {
@@ -117,13 +123,6 @@ async function setupMap() {
   map.on('mousemove', function(e) {
     onHover(e)
   });
-
-  // on everything load, do stuff!
-  map.on('idle', setAfterLoad);
-  function setAfterLoad(e) {
-    onMapReady();
-    map.off('idle', setAfterLoad);
-  }
 }
 
 function onHover(location) {
