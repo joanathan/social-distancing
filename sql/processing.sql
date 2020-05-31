@@ -66,11 +66,15 @@ SELECT DISTINCT
 	s.intersect_geom AS sidewalk_geom,
 	p.geom AS cbg_geom,
 	round(st_area(s.intersect_geom::geography)) AS sidewalk_area,
-	round(p.population_2019) AS population_2019
+	round(p.population_2019) AS population_2019,
+	--another approach is to calculate distance per person when loading the map
+	round(sqrt(st_area(s.intersect_geom::geography) / p.population_2019)) AS distance_per_person
 FROM
 	sf_sidewalk_intersect s
 	JOIN population p ON (s.geoid10 = p.geoid10);
 
+
+-- optional: to enrich your analysis
 -- drop table sf_social_distancing;
 CREATE TABLE sf_social_distancing AS
 WITH hospital_closest AS (

@@ -3,6 +3,9 @@
 ## See heatmap [here](https://sf-social-distancing.s3-us-west-1.amazonaws.com/index.html)
 ![](images/map.png)
 
+## Process and Tools
+![](images/0_process.png)
+
 ## Methodology
 #### 1. Prepare sidewalk dataset
 
