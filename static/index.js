@@ -2,14 +2,10 @@ var fieldsToShow = {
   'blockgroup': [
     ["Block Group ${this.geoid10}"],
     ["Population 2019", "${this.population_2019} people"],
-    ["Sidewalk Area Per Person", "${this.distance_ft} feet"],
-    // ["Sidewalk Area Per Person ${this.rank_distance}", "${this.distance_ft} feet"],
-    ["Hospital", "${this.hospital_name} (${this.hospital_distance_miles} miles)"],
-    // ["Hospital ${this.rank_hospitaldistance}", "${this.hospital_name} (${this.hospital_distance_miles} miles)"],
-    ["Food Services", "${this.count_foodservices} restaurants in the area"],
-    // ["Food Services ${this.rank_foodservices}", "${this.count_foodservices} restaurants in the area"],
-    ["Transit", "${this.count_munistops} Muni stops nearby"]]   
-    // ["Transit ${this.rank_munistops}", "${this.count_munistops} Muni stops nearby"]]
+    ["Sidewalk Area Per Person ${this.rank_distance}", "${this.distance_ft} feet"],
+    ["Hospital ${this.rank_hospitaldistance}", "${this.hospital_name} (${this.hospital_distance_miles} miles)"],
+    ["Food Services ${this.rank_foodservices}", "${this.count_foodservices} restaurants in the area"],
+    ["Transit ${this.rank_munistops}", "${this.count_munistops} Muni stops nearby"]]
 }
 
 var inputs = {

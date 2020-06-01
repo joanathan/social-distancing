@@ -149,10 +149,10 @@ function showPopup(feature, location) {
 
   // calculate distance to show
   properties['distance_ft'] = state['distance_ft'] // copy feature state
-  properties['rank_distance'] = rank(state['distance_ft'], [0, 12, 24])
-  properties['rank_munistops'] = rank(state['count_munistops'], [0, 4, 8])
-  properties['rank_hospitaldistance'] = rank(state['hospital_distance_miles'], [0.5, 0.25, 0])
-  properties['rank_foodservices'] = rank(state['count_foodservices'], [0, 5, 15])
+  properties['rank_distance'] = rank(properties['distance_ft'], [12, 24])
+  properties['rank_munistops'] = rank(properties['count_munistops'], [4, 8])
+  properties['rank_hospitaldistance'] = rank(properties['hospital_distance_miles'], [0.5, 0.25])
+  properties['rank_foodservices'] = rank(properties['count_foodservices'], [5, 15])
 
   for (let key in properties) {
     if (properties[key] == "null") {
@@ -206,10 +206,21 @@ function setVisibility(layer, toggleId) {
 }
 
 function rank(value, array) {
+  if (value == "null") {
+    value = 0
+  }
+
+  let decreasing = array[0] > array[1]
   for (let i = 0; i < array.length; i++) {
-    if (value < array[i]) {
-      return i
+    if (decreasing) {
+      if (value > array[i]) {
+        return i + 1
+      }
+    } else {
+      if (value < array[i]) {
+        return i + 1
+      }
     }
   }
-  return array.length
+  return array.length + 1
 }
