@@ -1,6 +1,6 @@
 # Social Distancing Density
 
-## See heatmap [here](https://sf-social-distancing.s3-us-west-1.amazonaws.com/index.html)
+## See heatmap [here](http://socialdistancingdensity.info/)
 ![](images/map.png)
 
 ## Process and Tools
