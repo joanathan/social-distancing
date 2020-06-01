@@ -14,6 +14,7 @@ https://www.sfmta.com/reports/gtfs-transit-data
 
 **SF Restaurants**
 https://data.sfgov.org/Economy-and-Community/Map-of-Registered-Businesses-San-Francisco/9tqe-vdng
+Geocoded the address using Geocod.io
 
 **SF Hospitals**
 Scrape a list of hospitals in SF using Google Places API.

@@ -41,3 +41,8 @@ Use `st_intersection` to split sidewalk polygon, so each census block group has 
 
 Calculate social distancing density for each census block group. Social Distancing Density is the square root of sidewalk area per population density `(sq.rt(sidewalk / population)`. Use `st_area` to calculate the sidewalk area. 
 ![](images/5_calculate.png)
+
+#### 7. Enhance the analysis with other datasets
+
+This step is optional. Find the nearest hospital, calculate the number of restaurants, and access to Muni stops.
+![](images/6_enrich.png)
