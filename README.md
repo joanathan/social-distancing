@@ -1,6 +1,5 @@
 # Social Distancing Density
 
-## See heatmap [here](http://socialdistancingdensity.info/)
 ![](images/map.png)
 
 ## Process and Tools
